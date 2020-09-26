@@ -1,7 +1,7 @@
 package com.example.construction.model;
 
 import com.example.construction.util.OfferStatus;
-import net.minidev.json.annotate.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.hateoas.RepresentationModel;
 
 import javax.persistence.*;
@@ -13,12 +13,13 @@ public class Offer extends RepresentationModel<Offer> {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String name;
-    @JsonIgnore
     @ManyToOne
+    @JsonIgnore
     private Bidder bidder;
     private OfferStatus offerStatus;
     private BigDecimal amount;
     @OneToOne
+    @JsonIgnore
     private Tender tender;
 
     public Offer() {

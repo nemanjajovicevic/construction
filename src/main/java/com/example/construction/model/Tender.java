@@ -13,11 +13,12 @@ public class Tender extends RepresentationModel<Tender> {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String name;
-    @JsonIgnore
     @ManyToOne
+    @JsonIgnore
     private Issuer issuer;
     private TenderStatus tenderStatus;
     @OneToMany(targetEntity=Offer.class)
+    @JsonIgnore
     private Set<Offer> offers;
 
     public Tender() {
