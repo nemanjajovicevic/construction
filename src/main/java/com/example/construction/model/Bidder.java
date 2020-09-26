@@ -8,13 +8,18 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 @Entity
-public class Issuer extends RepresentationModel<Issuer> {
+public class Bidder extends RepresentationModel<Bidder>  {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String name;
 
-    public Issuer() {
+    public Bidder() {
+    }
+
+    public Bidder(Long id, String name) {
+        this.id = id;
+        this.name = name;
     }
 
     public Long getId() {
