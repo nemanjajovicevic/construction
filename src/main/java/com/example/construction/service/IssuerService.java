@@ -7,7 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.Optional;
 
 @Service
 public class IssuerService {
@@ -20,8 +20,8 @@ public class IssuerService {
         this.issuerRepository = issuerRepository;
     }
 
-    public List<Issuer> getIssuers() {
-        LOG.info("Getting Issuers");
-        return issuerRepository.findAll();
+    public Optional<Issuer> getIssuer(Long issuerId) {
+        LOG.info("Getting issuer");
+        return issuerRepository.findById(issuerId);
     }
 }
