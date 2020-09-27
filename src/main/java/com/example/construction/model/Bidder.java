@@ -1,14 +1,13 @@
 package com.example.construction.model;
 
-import org.springframework.hateoas.RepresentationModel;
-
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import java.util.Objects;
 
 @Entity
-public class Bidder extends RepresentationModel<Bidder>  {
+public class Bidder {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -36,5 +35,20 @@ public class Bidder extends RepresentationModel<Bidder>  {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        Bidder bidder = (Bidder) o;
+        return Objects.equals(id, bidder.id) &&
+                Objects.equals(name, bidder.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), id, name);
     }
 }

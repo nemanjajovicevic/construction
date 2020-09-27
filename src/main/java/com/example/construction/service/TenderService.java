@@ -8,9 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
-import static com.example.construction.util.TenderStatus.CLOSED;
+import static com.example.construction.util.TenderStatus.OPENED;
 
 @Service
 public class TenderService {
@@ -30,19 +29,12 @@ public class TenderService {
 
     public List<Tender> getTendersFromIssuer(Long issuerId) {
         LOG.info("Getting issuer tenders");
-        return tenderRepository.findAll()
-                .stream()
-                .filter(tender -> issuerId.equals(tender.getIssuer().getId()))
-                .collect(Collectors.toList());
+        return tenderRepository.findAllByIssuer_id(issuerId);
     }
 
     public void createTender(Tender tender) {
         LOG.info("Creating tender");
+        tender.setTenderStatus(OPENED);
         tenderRepository.save(tender);
-    }
-
-    public void closeTender(Long tenderId) {
-        LOG.info("Closing tender");
-        tenderRepository.getOne(tenderId).setTenderStatus(CLOSED);
     }
 }

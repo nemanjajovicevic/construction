@@ -2,13 +2,13 @@ package com.example.construction.model;
 
 import com.example.construction.util.TenderStatus;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.springframework.hateoas.RepresentationModel;
 
 import javax.persistence.*;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
-public class Tender extends RepresentationModel<Tender> {
+public class Tender {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -64,11 +64,29 @@ public class Tender extends RepresentationModel<Tender> {
         this.tenderStatus = tenderStatus;
     }
 
-    public Set getOffers() {
+    public Set<Offer> getOffers() {
         return offers;
     }
 
-    public void setOffers(Set offers) {
+    public void setOffers(Set<Offer> offers) {
         this.offers = offers;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        Tender tender = (Tender) o;
+        return Objects.equals(id, tender.id) &&
+                Objects.equals(name, tender.name) &&
+                Objects.equals(issuer, tender.issuer) &&
+                tenderStatus == tender.tenderStatus &&
+                Objects.equals(offers, tender.offers);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), id, name, issuer, tenderStatus, offers);
     }
 }

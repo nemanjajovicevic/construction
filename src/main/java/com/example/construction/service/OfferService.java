@@ -1,26 +1,35 @@
 package com.example.construction.service;
 
 import com.example.construction.model.Offer;
+import com.example.construction.model.Tender;
 import com.example.construction.repository.OfferRepository;
+import com.example.construction.repository.TenderRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.example.construction.util.OfferStatus.*;
+import static com.example.construction.util.TenderStatus.CLOSED;
 
 @Service
 public class OfferService {
     private Logger LOG = LoggerFactory.getLogger(OfferService.class);
 
     private OfferRepository offerRepository;
+    private TenderRepository tenderRepository;
 
     @Autowired
     public void setOfferRepository(OfferRepository offerRepository) {
         this.offerRepository = offerRepository;
+    }
+    @Autowired
+    public void tenderRepository(TenderRepository tenderRepository) {
+        this.tenderRepository = tenderRepository;
     }
 
     public List<Offer> getOffers() {
@@ -30,44 +39,48 @@ public class OfferService {
 
     public List<Offer> getIssuerTenderOffers(Long issuerId) {
         LOG.info("Getting issuer tender offers");
-        return offerRepository.findAll()
+        List<Tender> tenders = tenderRepository.findAll()
                 .stream()
-                .filter(offer -> issuerId.equals(offer.getTender().getIssuer().getId()))
+                .filter(t -> issuerId.equals(t.getIssuer().getId()))
                 .collect(Collectors.toList());
+        List<Offer> offers = new ArrayList<>();
+        tenders.forEach(t -> offers.addAll(offerRepository.findAllByTender_id(t.getId())));
+        return offers;
     }
 
     public List<Offer> getBidderOffers(Long bidderId) {
         LOG.info("Getting bidder offers");
-        return offerRepository.findAll()
-                .stream()
-                .filter(offer -> bidderId.equals(offer.getBidder().getId()))
-                .collect(Collectors.toList());
+        return offerRepository.findAllByBidder_id(bidderId);
     }
 
     public List<Offer> getBidderTenderOffers(Long bidderId, List<Long> tenderIds) {
         LOG.info("Getting bidder tender offers");
-        return offerRepository.findAll()
+
+        return offerRepository.findAllByBidder_id(bidderId)
                 .stream()
-                .filter(offer -> bidderId.equals(offer.getBidder().getId())
-                        && tenderIds.contains(offer.getTender().getId()))
+                .filter(o -> tenderIds.contains(o.getTender().getId()))
                 .collect(Collectors.toList());
     }
 
     public void createOffer(Offer offer) {
         LOG.info("Creating offer");
+        offer.setOfferStatus(PENDING);
         offerRepository.save(offer);
     }
 
-    public Offer acceptOffer(Long offerId) {
+    public void acceptOffer(Long offerId) {
         LOG.info("Accepting offer and rejecting others");
         Offer offer = offerRepository.findById(offerId).get();
         offer.setOfferStatus(ACCEPTED);
-        offerRepository.findAll()
+        Tender tender = tenderRepository.getOne(offer.getTender().getId());
+        List<Offer> offersToReject = offerRepository.findAllByTender_id(tender.getId())
                 .stream()
-                .filter(o -> o.getTender().getId()
-                        .equals(offer.getTender().getId())
-                        && PENDING.equals(o.getOfferStatus()))
-                .forEach(o -> o.setOfferStatus(REJECTED));
-        return offer;
+                .filter(o -> PENDING.equals(o.getOfferStatus()))
+                .collect(Collectors.toList());
+        offersToReject.forEach(o -> o.setOfferStatus(REJECTED));
+        offerRepository.saveAll(offersToReject);
+        LOG.info("Closing tender");
+        tender.setTenderStatus(CLOSED);
+        tenderRepository.save(tender);
     }
 }

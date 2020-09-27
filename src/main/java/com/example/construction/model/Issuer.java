@@ -1,20 +1,24 @@
 package com.example.construction.model;
 
-import org.springframework.hateoas.RepresentationModel;
-
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import java.util.Objects;
 
 @Entity
-public class Issuer extends RepresentationModel<Issuer> {
+public class Issuer {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String name;
 
     public Issuer() {
+    }
+
+    public Issuer(Long id, String name) {
+        this.id = id;
+        this.name = name;
     }
 
     public Long getId() {
@@ -31,5 +35,20 @@ public class Issuer extends RepresentationModel<Issuer> {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        Issuer issuer = (Issuer) o;
+        return Objects.equals(id, issuer.id) &&
+                Objects.equals(name, issuer.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), id, name);
     }
 }

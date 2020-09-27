@@ -2,13 +2,13 @@ package com.example.construction.model;
 
 import com.example.construction.util.OfferStatus;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.springframework.hateoas.RepresentationModel;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.util.Objects;
 
 @Entity
-public class Offer extends RepresentationModel<Offer> {
+public class Offer {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -80,5 +80,24 @@ public class Offer extends RepresentationModel<Offer> {
 
     public void setTender(Tender tender) {
         this.tender = tender;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        Offer offer = (Offer) o;
+        return Objects.equals(id, offer.id) &&
+                Objects.equals(name, offer.name) &&
+                Objects.equals(bidder, offer.bidder) &&
+                offerStatus == offer.offerStatus &&
+                Objects.equals(amount, offer.amount) &&
+                Objects.equals(tender, offer.tender);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), id, name, bidder, offerStatus, amount, tender);
     }
 }
