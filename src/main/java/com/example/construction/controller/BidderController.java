@@ -1,6 +1,5 @@
 package com.example.construction.controller;
 
-import com.example.construction.converter.EntityConverter;
 import com.example.construction.dto.OfferDTO;
 import com.example.construction.dto.TenderDTO;
 import com.example.construction.exception.WebApplicationNotFoundException;
@@ -14,11 +13,13 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import org.modelmapper.ModelMapper;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
@@ -30,13 +31,13 @@ public class BidderController {
     private final OfferService offerService;
     private final TenderService tenderService;
     private final BidderService bidderService;
-    private final EntityConverter entityConverter;
+    private final ModelMapper modelMapper;
 
-    public BidderController(OfferService offerService, TenderService tenderService, BidderService bidderService, EntityConverter entityConverter) {
+    public BidderController(OfferService offerService, TenderService tenderService, BidderService bidderService, ModelMapper modelMapper) {
         this.offerService = offerService;
         this.tenderService = tenderService;
         this.bidderService = bidderService;
-        this.entityConverter = entityConverter;
+        this.modelMapper = modelMapper;
     }
 
     @GetMapping(path = "/{bidderId}/offers", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -45,7 +46,7 @@ public class BidderController {
     public ResponseEntity<List<OfferDTO>> getBidderOffers(@PathVariable Long bidderId) {
         bidderService.getBidder(bidderId).orElseThrow(() -> new WebApplicationNotFoundException("Bidder doesn't exist"));
         List<Offer> offers = offerService.getBidderOffers(bidderId);
-        List<OfferDTO> offersDTO = entityConverter.convertOffers(offers);
+        List<OfferDTO> offersDTO = offers.stream().map(o -> modelMapper.map(o, OfferDTO.class)).collect(Collectors.toList());
         offersDTO.forEach(offer -> offer.addIf(!offer.hasLinks(), () -> linkTo(BidderController.class)
                 .slash(offer.getBidder().getId())
                 .slash("offers")
@@ -57,7 +58,7 @@ public class BidderController {
     @ApiOperation("Create an offer")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = Bidder.class)})
     public void createOffers(@RequestBody List<OfferDTO> offersDTO) {
-        List<Offer> offers = entityConverter.convertOffersDTO(offersDTO);
+        List<Offer> offers = offersDTO.stream().map(o -> modelMapper.map(o, Offer.class)).collect(Collectors.toList());
         offers.forEach(offerService::createOffer);
     }
 
@@ -67,7 +68,7 @@ public class BidderController {
     public ResponseEntity<List<OfferDTO>> getBidderOffers(@PathVariable Long bidderId, @PathVariable List<Long> tenderIds) {
         bidderService.getBidder(bidderId).orElseThrow(() -> new WebApplicationNotFoundException("Bidder doesn't exist"));
         List<Offer> offers = offerService.getBidderTenderOffers(bidderId, tenderIds);
-        List<OfferDTO> offersDTO = entityConverter.convertOffers(offers);
+        List<OfferDTO> offersDTO = offers.stream().map(o -> modelMapper.map(o, OfferDTO.class)).collect(Collectors.toList());
         offersDTO.forEach(offer -> offer.addIf(!offer.hasLinks(), () -> linkTo(BidderController.class)
                 .slash(offer.getBidder().getId())
                 .slash(offer.getTender().getId())
@@ -80,7 +81,7 @@ public class BidderController {
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = Bidder.class)})
     public ResponseEntity<List<TenderDTO>> getTenders() {
         List<Tender> tenders = tenderService.getTenders();
-        List<TenderDTO> tendersDTO = entityConverter.convertTenders(tenders);
+        List<TenderDTO> tendersDTO = tenders.stream().map(t -> modelMapper.map(t, TenderDTO.class)).collect(Collectors.toList());
         tendersDTO.forEach(tender -> tender.add(linkTo(BidderController.class)
                 .slash("tenders")
                 .withSelfRel()));

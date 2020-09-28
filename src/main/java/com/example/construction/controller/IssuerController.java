@@ -1,6 +1,5 @@
 package com.example.construction.controller;
 
-import com.example.construction.converter.EntityConverter;
 import com.example.construction.dto.OfferDTO;
 import com.example.construction.dto.TenderDTO;
 import com.example.construction.exception.WebApplicationNotFoundException;
@@ -14,11 +13,13 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import org.modelmapper.ModelMapper;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
@@ -30,20 +31,20 @@ public class IssuerController {
     private final TenderService tenderService;
     private final OfferService offerService;
     private final IssuerService issuerService;
-    private final EntityConverter entityConverter;
+    private final ModelMapper modelMapper;
 
-    public IssuerController(TenderService tenderService, OfferService offerService, IssuerService issuerService, EntityConverter entityConverter) {
+    public IssuerController(TenderService tenderService, OfferService offerService, IssuerService issuerService, ModelMapper modelMapper) {
         this.tenderService = tenderService;
         this.offerService = offerService;
         this.issuerService = issuerService;
-        this.entityConverter = entityConverter;
+        this.modelMapper = modelMapper;
     }
 
     @PostMapping(path = "/tender", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation("Create tender")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = Issuer.class)})
     public void createTender(@RequestBody TenderDTO tenderDTO) {
-        tenderService.createTender(entityConverter.convertToTender(tenderDTO));
+        tenderService.createTender(modelMapper.map(tenderDTO, Tender.class));
     }
 
     @PutMapping(path = "/offer/accept/{offerId}", consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -59,7 +60,7 @@ public class IssuerController {
     public ResponseEntity<List<OfferDTO>> getIssuerTenderOffers(@PathVariable Long issuerId) {
         issuerService.getIssuer(issuerId).orElseThrow(() -> new WebApplicationNotFoundException("Issuer doesn't exist"));
         List<Offer> offers = offerService.getIssuerTenderOffers(issuerId);
-        List<OfferDTO> offersDTO = entityConverter.convertOffers(offers);
+        List<OfferDTO> offersDTO = offers.stream().map(o -> modelMapper.map(o, OfferDTO.class)).collect(Collectors.toList());
         offersDTO.forEach(offer -> offer.addIf(!offer.hasLinks(), () -> linkTo(IssuerController.class)
                 .slash(issuerId)
                 .slash("tender")
@@ -74,7 +75,7 @@ public class IssuerController {
     public ResponseEntity<List<TenderDTO>> getIssuerTenders(@PathVariable Long issuerId) {
         issuerService.getIssuer(issuerId).orElseThrow(() -> new WebApplicationNotFoundException("Issuer doesn't exist"));
         List<Tender> tenders = tenderService.getTendersFromIssuer(issuerId);
-        List<TenderDTO> tendersDTO = entityConverter.convertTenders(tenders);
+        List<TenderDTO> tendersDTO = tenders.stream().map(t -> modelMapper.map(t, TenderDTO.class)).collect(Collectors.toList());
         tendersDTO.forEach(tender -> tender.addIf(!tender.hasLinks(), () -> linkTo(IssuerController.class)
                         .slash(issuerId)
                         .slash("tenders")

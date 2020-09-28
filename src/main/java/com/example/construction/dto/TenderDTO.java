@@ -1,12 +1,16 @@
 package com.example.construction.dto;
 
-import com.example.construction.model.Issuer;
+import com.example.construction.util.TenderStatus;
 import org.springframework.hateoas.RepresentationModel;
+
+import java.util.Set;
 
 public class TenderDTO extends RepresentationModel<TenderDTO> {
     private Long id;
     private String name;
-    private Issuer issuer;
+    private IssuerDTO issuer;
+    private TenderStatus tenderStatus;
+    private Set<OfferDTO> offers;
 
     public TenderDTO() {
     }
@@ -27,11 +31,27 @@ public class TenderDTO extends RepresentationModel<TenderDTO> {
         this.name = name;
     }
 
-    public Issuer getIssuer() {
+    public IssuerDTO getIssuer() {
         return issuer;
     }
 
-    public void setIssuer(Issuer issuer) {
+    public void setIssuer(IssuerDTO issuer) {
         this.issuer = issuer;
+    }
+
+    public TenderStatus getTenderStatus() {
+        return tenderStatus;
+    }
+
+    public void setTenderStatus(TenderStatus tenderStatus) {
+        this.tenderStatus = tenderStatus;
+    }
+
+    public Set<OfferDTO> getOffers() {
+        return offers;
+    }
+
+    public void setOffers(Set<OfferDTO> offers) {
+        this.offers = offers;
     }
 }

@@ -1,7 +1,5 @@
 package com.example.construction.dto;
 
-import com.example.construction.model.Bidder;
-import com.example.construction.model.Tender;
 import com.example.construction.util.OfferStatus;
 import org.springframework.hateoas.RepresentationModel;
 
@@ -10,10 +8,10 @@ import java.math.BigDecimal;
 public class OfferDTO extends RepresentationModel<OfferDTO> {
     private Long id;
     private String name;
-    private Bidder bidder;
+    private BidderDTO bidder;
     private OfferStatus offerStatus;
     private BigDecimal amount;
-    private Tender tender;
+    private TenderDTO tender;
 
     public OfferDTO() {
     }
@@ -34,16 +32,20 @@ public class OfferDTO extends RepresentationModel<OfferDTO> {
         this.name = name;
     }
 
-    public Bidder getBidder() {
+    public BidderDTO getBidder() {
         return bidder;
     }
 
-    public void setBidder(Bidder bidder) {
+    public void setBidder(BidderDTO bidder) {
         this.bidder = bidder;
     }
 
     public OfferStatus getOfferStatus() {
         return offerStatus;
+    }
+
+    public void setOfferStatus(OfferStatus offerStatus) {
+        this.offerStatus = offerStatus;
     }
 
     public BigDecimal getAmount() {
@@ -54,11 +56,11 @@ public class OfferDTO extends RepresentationModel<OfferDTO> {
         this.amount = amount;
     }
 
-    public Tender getTender() {
+    public TenderDTO getTender() {
         return tender;
     }
 
-    public void setTender(Tender tender) {
+    public void setTender(TenderDTO tender) {
         this.tender = tender;
     }
 }
