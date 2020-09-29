@@ -10,4 +10,5 @@ import java.util.List;
 public interface OfferRepository extends JpaRepository<Offer, Long> {
     List<Offer> findAllByBidder_id(Long bidderId);
     List<Offer> findAllByTender_id(Long tenderId);
+    Offer findByName(String name);
 }

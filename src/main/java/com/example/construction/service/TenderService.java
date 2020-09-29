@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -22,16 +23,19 @@ public class TenderService {
         this.tenderRepository = tenderRepository;
     }
 
+    @Transactional
     public List<Tender> getTenders() {
         LOG.info("Getting tenders");
         return tenderRepository.findAll();
     }
 
+    @Transactional
     public List<Tender> getTendersFromIssuer(Long issuerId) {
         LOG.info("Getting issuer tenders");
         return tenderRepository.findAllByIssuer_id(issuerId);
     }
 
+    @Transactional
     public void createTender(Tender tender) {
         LOG.info("Creating tender");
         tender.setTenderStatus(OPENED);

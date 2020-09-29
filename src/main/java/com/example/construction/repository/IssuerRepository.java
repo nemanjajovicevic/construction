@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface IssuerRepository extends JpaRepository<Issuer, Long>  {
+    Issuer findByName(String name);
 }

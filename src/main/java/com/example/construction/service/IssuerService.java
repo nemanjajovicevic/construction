@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -20,6 +21,7 @@ public class IssuerService {
         this.issuerRepository = issuerRepository;
     }
 
+    @Transactional
     public Optional<Issuer> getIssuer(Long issuerId) {
         LOG.info("Getting issuer");
         return issuerRepository.findById(issuerId);

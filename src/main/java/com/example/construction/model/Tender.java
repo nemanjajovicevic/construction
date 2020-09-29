@@ -4,6 +4,7 @@ import com.example.construction.util.TenderStatus;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
@@ -19,7 +20,7 @@ public class Tender {
     private TenderStatus tenderStatus;
     @OneToMany(targetEntity=Offer.class)
     @JsonIgnore
-    private Set<Offer> offers;
+    private Set<Offer> offers = new HashSet<>();
 
     public Tender() {
     }
@@ -66,10 +67,6 @@ public class Tender {
 
     public Set<Offer> getOffers() {
         return offers;
-    }
-
-    public void setOffers(Set<Offer> offers) {
-        this.offers = offers;
     }
 
     @Override

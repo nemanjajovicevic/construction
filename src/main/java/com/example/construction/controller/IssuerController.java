@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
 @RestController
-@RequestMapping(path = "api")
+@RequestMapping(path = "/api/issuer")
 @Api(value = "IssuerControllerAPI", produces = MediaType.APPLICATION_JSON_VALUE)
 public class IssuerController {
 

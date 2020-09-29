@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
 @RestController
-@RequestMapping(path = "api")
+@RequestMapping(path = "/api/bidder")
 @Api(value = "BidderControllerAPI", produces = MediaType.APPLICATION_JSON_VALUE)
 public class BidderController {
 
@@ -65,7 +65,7 @@ public class BidderController {
     @GetMapping(path = "/{bidderId}/{tenderIds}/offers", produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation("Gets bidder tenders offers")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = Bidder.class)})
-    public ResponseEntity<List<OfferDTO>> getBidderOffers(@PathVariable Long bidderId, @PathVariable List<Long> tenderIds) {
+    public ResponseEntity<List<OfferDTO>> getBidderTendersOffers(@PathVariable Long bidderId, @PathVariable List<Long> tenderIds) {
         bidderService.getBidder(bidderId).orElseThrow(() -> new WebApplicationNotFoundException("Bidder doesn't exist"));
         List<Offer> offers = offerService.getBidderTenderOffers(bidderId, tenderIds);
         List<OfferDTO> offersDTO = offers.stream().map(o -> modelMapper.map(o, OfferDTO.class)).collect(Collectors.toList());

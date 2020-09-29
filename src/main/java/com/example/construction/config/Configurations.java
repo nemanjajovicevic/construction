@@ -1,6 +1,5 @@
 package com.example.construction.config;
 
-import com.example.construction.controller.IssuerController;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -20,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @EnableSwagger2
-@ComponentScan(basePackageClasses = IssuerController.class)
+@ComponentScan
 @Configuration
 public class Configurations {
     private static final String SWAGGER_API_VERSION = "1.0";

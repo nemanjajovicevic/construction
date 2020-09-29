@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,11 +33,13 @@ public class OfferService {
         this.tenderRepository = tenderRepository;
     }
 
+    @Transactional
     public List<Offer> getOffers() {
         LOG.info("Getting offers");
         return offerRepository.findAll();
     }
 
+    @Transactional
     public List<Offer> getIssuerTenderOffers(Long issuerId) {
         LOG.info("Getting issuer tender offers");
         List<Tender> tenders = tenderRepository.findAll()
@@ -48,11 +51,13 @@ public class OfferService {
         return offers;
     }
 
+    @Transactional
     public List<Offer> getBidderOffers(Long bidderId) {
         LOG.info("Getting bidder offers");
         return offerRepository.findAllByBidder_id(bidderId);
     }
 
+    @Transactional
     public List<Offer> getBidderTenderOffers(Long bidderId, List<Long> tenderIds) {
         LOG.info("Getting bidder tender offers");
 
@@ -62,12 +67,14 @@ public class OfferService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     public void createOffer(Offer offer) {
         LOG.info("Creating offer");
         offer.setOfferStatus(PENDING);
         offerRepository.save(offer);
     }
 
+    @Transactional
     public void acceptOffer(Long offerId) {
         LOG.info("Accepting offer and rejecting others");
         Offer offer = offerRepository.findById(offerId).get();

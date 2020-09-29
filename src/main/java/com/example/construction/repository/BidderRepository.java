@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface BidderRepository extends JpaRepository<Bidder, Long> {
+    Bidder findByName(String name);
 }
