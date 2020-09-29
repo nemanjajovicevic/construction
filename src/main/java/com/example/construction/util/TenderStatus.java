@@ -4,7 +4,7 @@ public enum TenderStatus {
     OPENED("OPENED"),
     CLOSED("CLOSED");
 
-    private String name;
+    private final String name;
 
     TenderStatus(String name) {
         this.name = name;

@@ -1,7 +1,6 @@
 package com.example.construction.model;
 
 import com.example.construction.util.TenderStatus;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -15,11 +14,9 @@ public class Tender {
     private Long id;
     private String name;
     @ManyToOne
-    @JsonIgnore
     private Issuer issuer;
     private TenderStatus tenderStatus;
     @OneToMany(targetEntity=Offer.class)
-    @JsonIgnore
     private Set<Offer> offers = new HashSet<>();
 
     public Tender() {

@@ -100,4 +100,13 @@ public class IssuerControllerUnitTest {
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
+
+    @Test
+    public void retrieveIssuerTenders_unknownURL() throws Exception {
+        mvc.perform(MockMvcRequestBuilders
+                .get("/api/issuer/{id}/unknown",1)
+                .characterEncoding("utf-8")
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
+    }
 }

@@ -40,8 +40,8 @@ public class OfferService {
     }
 
     @Transactional
-    public List<Offer> getIssuerTenderOffers(Long issuerId) {
-        LOG.info("Getting issuer tender offers");
+    public List<Offer> getIssuerTendersOffers(Long issuerId) {
+        LOG.info("Getting issuer tenders offers");
         List<Tender> tenders = tenderRepository.findAll()
                 .stream()
                 .filter(t -> issuerId.equals(t.getIssuer().getId()))

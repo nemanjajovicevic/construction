@@ -115,6 +115,15 @@ public class BidderControllerUnitTest {
     }
 
     @Test
+    public void retrieveBidderTendersOffers_unknownBidder() throws Exception {
+        mvc.perform( MockMvcRequestBuilders
+                .get("/api/bidder/{id}/1,2/offers",99L)
+                .characterEncoding("utf-8")
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
     public void retrieveTenders() throws Exception {
         mvc.perform( MockMvcRequestBuilders
                 .get("/api/bidder/tenders")

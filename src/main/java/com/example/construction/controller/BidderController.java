@@ -54,8 +54,8 @@ public class BidderController {
         return ResponseEntity.ok(offersDTO);
     }
 
-    @PostMapping(path = "/offer", consumes = MediaType.APPLICATION_JSON_VALUE)
-    @ApiOperation("Create an offer")
+    @PostMapping(path = "/offers", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ApiOperation("Create offers")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = Bidder.class)})
     public void createOffers(@RequestBody List<OfferDTO> offersDTO) {
         List<Offer> offers = offersDTO.stream().map(o -> modelMapper.map(o, Offer.class)).collect(Collectors.toList());
@@ -79,7 +79,7 @@ public class BidderController {
     @GetMapping(path = "/tenders", produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation("Gets tenders")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = Bidder.class)})
-    public ResponseEntity<List<TenderDTO>> getTenders() {
+    public ResponseEntity<List<TenderDTO>> getBidderTenders() {
         List<Tender> tenders = tenderService.getTenders();
         List<TenderDTO> tendersDTO = tenders.stream().map(t -> modelMapper.map(t, TenderDTO.class)).collect(Collectors.toList());
         tendersDTO.forEach(tender -> tender.add(linkTo(BidderController.class)

@@ -5,7 +5,7 @@ public enum OfferStatus {
     ACCEPTED("ACCEPTED"),
     REJECTED("REJECTED");
 
-    private String name;
+    private final String name;
 
     OfferStatus(String name) {
         this.name = name;

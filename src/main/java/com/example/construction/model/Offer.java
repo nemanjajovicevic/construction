@@ -1,7 +1,6 @@
 package com.example.construction.model;
 
 import com.example.construction.util.OfferStatus;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -14,12 +13,10 @@ public class Offer {
     private Long id;
     private String name;
     @ManyToOne
-    @JsonIgnore
     private Bidder bidder;
     private OfferStatus offerStatus;
     private BigDecimal amount;
     @OneToOne
-    @JsonIgnore
     private Tender tender;
 
     public Offer() {

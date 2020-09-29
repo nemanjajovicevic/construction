@@ -98,11 +98,18 @@ public class OfferServiceIntegrationTest {
         Issuer issuer = issuerRepository.findByName("FirstMockIssuer");
         Offer offer = offerRepository.findByName("FirstMockOffer");
 
-        List<Offer> offers = offerService.getIssuerTenderOffers(issuer.getId());
+        List<Offer> offers = offerService.getIssuerTendersOffers(issuer.getId());
 
         assertThat(offers.size() == 1);
         assertThat(offers.get(0).getTender().getId()).isEqualTo(offer.getTender().getId());
         assertThat(offers.get(0).getTender().getIssuer().getId()).isEqualTo(offer.getTender().getIssuer().getId());
+    }
+
+    @Test
+    public void retrieveIssuerTenderOffers_unknownIssuer() throws Exception {
+        List<Offer> offers = offerService.getIssuerTendersOffers(99L);
+
+        assertThat(offers.isEmpty());
     }
 
     @Test
@@ -116,6 +123,13 @@ public class OfferServiceIntegrationTest {
         assertThat(offers.size() == 1);
         assertThat(offers.get(0).getTender().getId()).isEqualTo(offer.getTender().getId());
         assertThat(offers.get(0).getBidder().getId()).isEqualTo(offer.getBidder().getId());
+    }
+
+    @Test
+    public void retrieveBidderTenderOffers_unknownBidderUnknownTenders() throws Exception {
+        List<Offer> offers = offerService.getBidderTenderOffers(99L, Collections.singletonList(99L));
+
+        assertThat(offers.isEmpty());
     }
 
     @Test

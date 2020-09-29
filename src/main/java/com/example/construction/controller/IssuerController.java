@@ -54,16 +54,16 @@ public class IssuerController {
         offerService.acceptOffer(offerId);
     }
 
-    @GetMapping(path = "/{issuerId}/tender/offers", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(path = "/{issuerId}/tenders/offers", produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation("Get issuer tender offers")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = Issuer.class)})
-    public ResponseEntity<List<OfferDTO>> getIssuerTenderOffers(@PathVariable Long issuerId) {
+    public ResponseEntity<List<OfferDTO>> getIssuerTendersOffers(@PathVariable Long issuerId) {
         issuerService.getIssuer(issuerId).orElseThrow(() -> new WebApplicationNotFoundException("Issuer doesn't exist"));
-        List<Offer> offers = offerService.getIssuerTenderOffers(issuerId);
+        List<Offer> offers = offerService.getIssuerTendersOffers(issuerId);
         List<OfferDTO> offersDTO = offers.stream().map(o -> modelMapper.map(o, OfferDTO.class)).collect(Collectors.toList());
         offersDTO.forEach(offer -> offer.addIf(!offer.hasLinks(), () -> linkTo(IssuerController.class)
                 .slash(issuerId)
-                .slash("tender")
+                .slash("tenders")
                 .slash("offers")
                 .withSelfRel()));
         return ResponseEntity.ok(offersDTO);
